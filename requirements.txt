@@ -1,0 +1,35 @@
+# ============================================
+# ACA 4.0 - Dependencias Mínimas
+# Sistema de Bots de Telegram con Supabase
+# ============================================
+
+# Core Framework
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+python-dotenv==1.1.1
+
+# Telegram Bot
+python-telegram-bot==22.3
+
+# Supabase (Base de datos + Storage)
+supabase==2.17.0
+postgrest==1.1.1
+storage3==0.12.0
+gotrue==2.12.3
+realtime==2.6.0
+
+# Utilidades
+pydantic==2.11.7
+pydantic-core==2.33.2
+
+# HTTP Client
+httpx==0.28.1
+httpcore==1.0.9
+
+# Logging y utilidades
+python-multipart==0.0.20
+
+# OpenAI (Opcional - para extracción de intención con IA)
+openai==1.54.5
+
+

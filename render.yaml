@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: aca-4-bot
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python run_production.py
+    envVars:
+      - key: ENVIRONMENT
+        value: production
+      - key: DEBUG
+        value: false
+      - key: PORT
+        fromService:
+          type: web
+          name: aca-4-bot
+          property: port
+    healthCheckPath: /health
+
