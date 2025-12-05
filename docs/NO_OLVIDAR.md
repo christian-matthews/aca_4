@@ -318,3 +318,4 @@ Antes de hacer cualquier cambio al sistema, verificar:
 **Última actualización:** 2025-11-13 10:20
 
 
+

@@ -561,6 +561,142 @@ Responde en formato JSON:
                 "fuentes_usadas": []
             }
     
+    async def answer_as_aca_qa(
+        self,
+        pregunta: str,
+        empresa_nombre: str,
+        reportes_financieros: List[Dict],
+        reportes_cfo: List[Dict],
+        historial: Optional[List[Dict]] = None
+    ) -> Dict[str, Any]:
+        """
+        Responder pregunta usando el rol ACA_QA (Analista de Consultas Q&A)
+        
+        Args:
+            pregunta: Pregunta del usuario
+            empresa_nombre: Nombre de la empresa activa
+            reportes_financieros: Lista de reportes financieros disponibles
+            reportes_cfo: Lista de reportes CFO disponibles
+            historial: Historial de conversación (opcional)
+        
+        Returns:
+            {
+                "respuesta": "texto de respuesta",
+                "requiere_ticket": False,
+                "motivo_ticket": None
+            }
+        """
+        # System prompt de ACA_QA
+        system_prompt = f"""Eres ACA_QA, un Analista de Consultas para un bot financiero-contable. Tu trabajo es responder preguntas y, si la solicitud implica acciones, riesgo o falta información, indicar que se debe escalar a revisión humana.
+
+EMPRESA ACTIVA: {empresa_nombre}
+Solo puedes responder sobre esta empresa. Si el usuario pregunta sobre otra empresa, indica que debe cambiar de empresa primero.
+
+Objetivo principal:
+• Responder preguntas con información verificada y específica de la empresa seleccionada.
+• Nunca ejecutar acciones críticas ni modificar datos contables.
+• Mantener trazabilidad: justificar respuestas con IDs / referencias internas cuando existan.
+
+Reglas duras (no romper):
+
+1. Scope por empresa obligatorio
+   • Solo puedes usar datos de la empresa activa ({empresa_nombre}).
+   • Si el usuario pide "la otra empresa", indica que debe cambiar de empresa.
+
+2. Modo / Proceso
+   • Estás siempre en el proceso: Q&A (consultas).
+   • No puedes mezclar procesos (pagos, cierre, clasificar, etc.).
+
+3. Acciones prohibidas
+   • Prohibido: pagar, transferir, cerrar períodos, emitir documentos tributarios, borrar o modificar registros.
+   • Si la solicitud requiere algo de eso: indica que requiere revisión humana.
+
+4. Calidad de respuesta
+   • Si respondes: entrega respuesta breve + bullets + (si existe) IDs o referencias.
+   • Si no estás seguro o faltan datos: indica claramente qué falta.
+
+Responde siempre en español, de forma clara y concisa."""
+
+        if not self.client:
+            logger.warning(f"⚠️ ACA_QA: Cliente OpenAI no disponible. API Key configurada: {bool(self.openai_key)}")
+            return {
+                "respuesta": "⚠️ El servicio de IA no está disponible. Por favor, contacta al administrador.",
+                "requiere_ticket": False,
+                "motivo_ticket": None
+            }
+        
+        try:
+            # Construir contexto de reportes
+            contexto_reportes = self._build_reportes_context(reportes_financieros, reportes_cfo)
+            
+            # Construir historial de conversación
+            historial_texto = ""
+            if historial:
+                historial_texto = "\n".join([
+                    f"- Usuario: {h.get('mensaje', '')[:150]}"
+                    for h in historial[-5:]
+                ])
+            
+            # Construir prompt del usuario
+            user_prompt = f"""CONTEXTO DISPONIBLE DE {empresa_nombre}:
+{contexto_reportes}
+
+HISTORIAL RECIENTE:
+{historial_texto if historial_texto else "No hay historial previo"}
+
+PREGUNTA DEL USUARIO: "{pregunta}"
+
+Responde de forma clara y concisa. Si no tienes información suficiente, indícalo claramente.
+Si la pregunta requiere una acción (pagar, transferir, cerrar período, etc.), indica que requiere revisión humana."""
+            
+            logger.info(f"🤖 ACA_QA procesando pregunta para {empresa_nombre}: '{pregunta[:50]}...'")
+            
+            # Llamar a OpenAI
+            response = await self.client.chat.completions.create(
+                model="gpt-4o-mini",
+                messages=[
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt}
+                ],
+                temperature=0.3,
+                max_tokens=1000
+            )
+            
+            respuesta = response.choices[0].message.content
+            
+            # Detectar si requiere ticket
+            requiere_ticket = False
+            motivo_ticket = None
+            
+            indicadores_ticket = [
+                "revisión humana", "escalar", "ticket", 
+                "no puedo realizar", "acción no permitida",
+                "contactar al administrador"
+            ]
+            
+            respuesta_lower = respuesta.lower()
+            for indicador in indicadores_ticket:
+                if indicador in respuesta_lower:
+                    requiere_ticket = True
+                    motivo_ticket = "Solicitud requiere revisión humana"
+                    break
+            
+            logger.info(f"✅ ACA_QA respondió. Requiere ticket: {requiere_ticket}")
+            
+            return {
+                "respuesta": respuesta,
+                "requiere_ticket": requiere_ticket,
+                "motivo_ticket": motivo_ticket
+            }
+            
+        except Exception as e:
+            logger.error(f"❌ Error en ACA_QA: {e}", exc_info=True)
+            return {
+                "respuesta": "Lo siento, hubo un error procesando tu consulta. Por favor, intenta de nuevo.",
+                "requiere_ticket": False,
+                "motivo_ticket": None
+            }
+    
     def _build_reportes_context(self, reportes_financieros: List[Dict], reportes_cfo: List[Dict]) -> str:
         """Construir texto de contexto a partir de los reportes"""
         contexto = ""

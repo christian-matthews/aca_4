@@ -332,8 +332,10 @@ class FileDownloadHandler:
             
             keyboard = organizar_botones_en_columnas(botones_telegram, columnas=2)
             
-            keyboard.append([InlineKeyboardButton("🔙 Volver", callback_data="download_back_categoria")])
-            keyboard.append([InlineKeyboardButton("❌ Cancelar", callback_data="download_cancelar")])
+            keyboard.append([
+                InlineKeyboardButton("🔙 Volver", callback_data="download_back_categoria"),
+                InlineKeyboardButton("❌ Cancelar", callback_data="download_cancelar")
+            ])
             reply_markup = InlineKeyboardMarkup(keyboard)
             
             logger.info(f"📋 Enviando mensaje con {len(keyboard)} filas de botones")
@@ -357,10 +359,14 @@ class FileDownloadHandler:
         text = "📅 **¿Para qué período necesitas los archivos?**\n\nSelecciona una opción:"
         
         keyboard = [
-            [InlineKeyboardButton(f"🟢 Mes actual ({current_month})", callback_data="download_periodo_actual")],
-            [InlineKeyboardButton(f"🟡 Mes anterior ({last_month})", callback_data="download_periodo_anterior")],
-            [InlineKeyboardButton("📅 Otro mes", callback_data="download_periodo_otro")],
-            [InlineKeyboardButton("❌ Cancelar", callback_data="download_cancelar")]
+            [
+                InlineKeyboardButton(f"🟢 Actual ({current_month})", callback_data="download_periodo_actual"),
+                InlineKeyboardButton(f"🟡 Anterior ({last_month})", callback_data="download_periodo_anterior")
+            ],
+            [
+                InlineKeyboardButton("📅 Otro mes", callback_data="download_periodo_otro"),
+                InlineKeyboardButton("❌ Cancelar", callback_data="download_cancelar")
+            ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
@@ -436,10 +442,12 @@ class FileDownloadHandler:
                 f"¿Quieres buscar en otro período?"
             )
             
-            # ✅ Agregar botones inline
+            # ✅ Agregar botones inline en 2 columnas
             keyboard = [
-                [InlineKeyboardButton("✅ Sí, buscar otro período", callback_data="download_buscar_otro_periodo")],
-                [InlineKeyboardButton("🔙 Volver al menú", callback_data="download_volver_menu")]
+                [
+                    InlineKeyboardButton("✅ Buscar otro período", callback_data="download_buscar_otro_periodo"),
+                    InlineKeyboardButton("🔙 Volver al menú", callback_data="download_volver_menu")
+                ]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             

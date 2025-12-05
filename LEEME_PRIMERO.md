@@ -1,7 +1,8 @@
 # 👋 LÉEME PRIMERO - ACA 4.0
 
 **Bienvenido al proyecto ACA 4.0**  
-**Última actualización:** 2025-11-13
+**Última actualización:** 2024-12-05  
+**Versión:** 4.1.1
 
 ---
 
@@ -12,136 +13,74 @@
 CONTEXTO_PROYECTO.md
 ```
 
-**2. Pégalo al inicio del chat y di:**
-```
-"Este es el contexto actual del proyecto ACA 4.0. 
-Por favor léelo antes de hacer cualquier cambio para evitar 
-sobrescribir avances o modificar cosas que ya funcionan."
-```
-
-**3. El asistente AI tendrá todo el contexto necesario**
+**2. Pégalo al inicio del chat**
 
 ---
 
-## 📁 ESTRUCTURA SIMPLIFICADA
+## 🆕 NOVEDADES (Diciembre 2024)
 
-```
-aca_4/
-│
-├── 🎯 CONTEXTO_PROYECTO.md        ← Documento CORE (pegar en cada sesión)
-├── 📁 ESTRUCTURA_PROYECTO.md       ← Mapa del proyecto
-├── 📄 LEEME_PRIMERO.md            ← Este archivo
-├── 📄 README.md                    ← README técnico del proyecto
-│
-├── 📂 app/                         ← Código de la aplicación
-│   ├── bots/handlers/             ← Lógica de los bots
-│   ├── services/                  ← Servicios (Storage, IA, etc.)
-│   ├── database/                  ← Cliente Supabase
-│   └── utils/                     ← Utilidades
-│
-├── 📂 docs/                        ← Toda la documentación
-│   ├── INDEX.md                   ← Índice completo
-│   ├── NO_OLVIDAR.md             ← Puntos críticos ⚠️
-│   ├── ESTADO_ACTUAL_SISTEMA.md  ← Estado completo
-│   ├── REFERENCIA_RAPIDA.md      ← Comandos rápidos
-│   └── [25+ documentos más...]
-│
-├── 📂 scripts_testing/            ← Scripts de testing
-│   ├── README.md                  ← Documentación de scripts
-│   ├── verificar_*.py            ← Scripts de verificación
-│   └── [13 scripts más...]
-│
-├── 📂 database/migrations/        ← Migraciones SQL
-│   ├── schema_completo.sql
-│   ├── 001_add_campos_archivos.sql
-│   └── [5 migraciones más...]
-│
-└── 📄 run.py                       ← Punto de entrada
-```
+### 🤖 **Asesor IA con OpenAI Assistants**
+- Búsqueda inteligente en PDFs de la empresa
+- Vector Store por empresa (aislamiento de datos)
+- NO inventa datos - solo información verificable
 
----
+### 🎫 **Sistema de Tickets**
+- ID único: `TKT-YYYYMMDD-XXXX`
+- Automático cuando IA no puede responder
+- Manual: "crear ticket", "necesito ayuda"
 
-## 📚 NAVEGACIÓN RÁPIDA
+### 📤 **Subida automática a OpenAI**
+- Reportes (reporte_mensual, estados_financieros)
+- Solo archivos PDF
+- Mensaje: "Disponible para consultas con Asesor IA"
 
-### **Para diferentes situaciones:**
-
-**🆕 Nueva sesión de chat:**
-→ `CONTEXTO_PROYECTO.md`
-
-**🔍 Buscar algo específico:**
-→ `ESTRUCTURA_PROYECTO.md` (dónde está cada cosa)
-
-**📖 Ver toda la documentación:**
-→ `docs/INDEX.md`
-
-**⚡ Comandos rápidos:**
-→ `docs/REFERENCIA_RAPIDA.md`
-
-**⚠️ Antes de modificar código:**
-→ `docs/NO_OLVIDAR.md`
-
-**🧪 Testing:**
-→ `scripts_testing/README.md`
-
-**🐛 Debugging:**
-→ `docs/CAMBIOS_2025-11-13.md` (problemas ya resueltos)
+### 📱 **Menús en 2 columnas**
+- Todos los menús estandarizados
+- Botón "Volver" después de subir archivo
 
 ---
 
 ## 🚀 INICIO RÁPIDO
 
-### **1. Iniciar el bot:**
 ```bash
-python3 run.py
-```
+# Iniciar
+python3 run_production.py
 
-### **2. Detener el bot:**
-```bash
-lsof -ti:8000 | xargs kill -9
-pkill -f "python.*run.py"
-```
+# Detener
+pkill -9 -f python
 
-### **3. Ver logs:**
-```bash
-tail -f aca_bot.log | grep -E "(🔍|📋|❌|ERROR)"
+# Migrar PDFs a OpenAI
+python3 scripts_testing/migrar_pdfs_openai.py
 ```
-
-### **4. Crear usuario:**
-```bash
-/adduser CHAT_ID NOMBRE ROL RUT_EMPRESA
-```
-Ejemplo: `/adduser 123456789 "Juan Perez" user 76142021-6`
 
 ---
 
 ## ✅ ESTADO ACTUAL
 
-**Sistema:** ✅ Funcional y probado  
-**Última prueba:** 2025-11-13 10:15  
-**Problemas conocidos:** Ninguno crítico
+**Sistema:** ✅ Funcional  
+**Última prueba:** 2024-12-05
 
-**Funcionalidades principales:**
-- ✅ Subida de archivos con clasificación completa
-- ✅ Descarga de archivos con búsqueda
-- ✅ Sistema multi-empresa funcionando
-- ✅ Análisis de períodos con IA
-- ✅ Comando /adduser simplificado
-- ✅ Menús estandarizados en 2 columnas
-
----
-
-## 📞 SOPORTE
-
-**Documentación completa:** `docs/INDEX.md`  
-**Problemas comunes:** `docs/REFERENCIA_RAPIDA.md` (sección Troubleshooting)  
-**Puntos críticos:** `docs/NO_OLVIDAR.md`
+**Funcionalidades:**
+- ✅ Subida/descarga de archivos
+- ✅ Sistema multi-empresa
+- ✅ Asesor IA con OpenAI Assistants
+- ✅ Sistema de tickets con ID único
+- ✅ Subida automática a OpenAI
+- ✅ Menús en 2 columnas
 
 ---
 
-**💡 Tip:** Mantén siempre actualizado `CONTEXTO_PROYECTO.md` después de cambios importantes
+## 📂 ARCHIVOS CLAVE
+
+| Archivo | Descripción |
+|---------|-------------|
+| `CONTEXTO_PROYECTO.md` | Documento core |
+| `README.md` | Documentación técnica |
+| `RENDER_ENV_VARS.md` | Variables de entorno |
+| `app/bots/handlers/advisor_handler.py` | Asesor IA + Tickets |
+| `app/services/openai_assistant_service.py` | OpenAI Assistants |
+| `app/bots/handlers/file_upload_handler.py` | Subida + OpenAI auto |
 
 ---
 
-**Última actualización:** 2025-11-13
-
-
+**Última actualización:** 2024-12-05

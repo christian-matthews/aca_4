@@ -166,7 +166,16 @@ class ProductionHandlers:
         # FASE 2: elif callback_data == "cxc_cxp":
         #     await ProductionHandlers._handle_cxc_cxp(query, user_data)
         elif callback_data == "asesor_ia":
-            await ProductionHandlers._handle_asesor_ia(query, user_data)
+            # ✅ Conectar con el nuevo AdvisorHandler
+            from app.bots.handlers.advisor_handler import AdvisorHandler
+            await AdvisorHandler.handle_advisor_start(update, context)
+            return
+        
+        # ✅ Manejar callbacks del Asesor IA
+        elif callback_data.startswith("advisor_"):
+            from app.bots.handlers.advisor_handler import AdvisorHandler
+            await AdvisorHandler.handle_advisor_callback(update, context)
+            return
         elif callback_data == "reporte_cfo":
             await ProductionHandlers._handle_reporte_cfo(query, user_data)
         elif callback_data == "ayuda":
@@ -238,7 +247,7 @@ class ProductionHandlers:
                     callback_data=f"mes_{current_year}_{month_num:02d}"
                 ))
                 
-                if len(row) == 3:  # 3 botones por fila
+                if len(row) == 2:  # 2 botones por fila
                     keyboard.append(row)
                     row = []
             
@@ -700,6 +709,15 @@ class ProductionHandlers:
             intent = session.get('intent')
             estado = session.get('estado')
             logger.info(f"🔍 ProductionHandlers.handle_message: sesión encontrada - intent={intent}, estado={estado}")
+            
+            # ✅ Si hay sesión activa de Asesor IA, procesarla
+            if intent == 'asesor_ia':
+                logger.info(f"🤖 Procesando mensaje con AdvisorHandler (intent={intent})")
+                from app.bots.handlers.advisor_handler import AdvisorHandler
+                handled = await AdvisorHandler.handle_advisor_message(update, context)
+                if handled:
+                    return  # Mensaje procesado por el asesor
+            
             # Si hay sesión activa de descarga o subida, dejar que los handlers específicos la manejen
             if intent in ['descargar_archivo', 'subir_archivo']:
                 logger.info(f"✅ Dejando que handler específico maneje el mensaje (intent={intent})")

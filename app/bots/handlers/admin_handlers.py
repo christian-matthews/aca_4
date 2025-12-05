@@ -425,8 +425,10 @@ class AdminHandlers:
                 text += f"• {usuario['nombre']} (Chat ID: {usuario['chat_id']})\n"
             
             keyboard = [
-                [InlineKeyboardButton("🔙 Volver", callback_data="list_empresas")],
-                [InlineKeyboardButton("❌ Desactivar Empresa", callback_data=f"deactivate_{empresa_id}")]
+                [
+                    InlineKeyboardButton("🔙 Volver", callback_data="list_empresas"),
+                    InlineKeyboardButton("❌ Desactivar", callback_data=f"deactivate_{empresa_id}")
+                ]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
             

@@ -187,6 +187,44 @@
     - Usuarios de prueba
     - Verificaciones realizadas
 
+27. **[RESUMEN_REVISION_MD.md](RESUMEN_REVISION_MD.md)** ⭐ **NUEVO**
+    - Revisión completa de toda la documentación .md
+    - Archivos actualizados y desactualizados
+    - Inconsistencias encontradas
+    - Recomendaciones de actualización
+
+28. **[PROXIMOS_PASOS_PERMISOS_SUBIDA.md](PROXIMOS_PASOS_PERMISOS_SUBIDA.md)** ⭐ **NUEVO**
+    - Análisis del problema de permisos de subida
+    - Alternativa 1: Bot separado para subida
+    - Alternativa 2: Validación en código actual
+    - Plan de implementación detallado
+    - Análisis de riesgos y casos de prueba
+
+29. **[LIMITANTES_ESCALABILIDAD.md](LIMITANTES_ESCALABILIDAD.md)** ⭐ **NUEVO**
+    - Análisis completo de limitantes de escalabilidad
+    - Límites de Telegram, Supabase, Render
+    - Capacidad estimada por escenario
+    - Recomendaciones por escala
+
+30. **[SOLUCIONES_RIESGOS_OBSERVABILIDAD.md](SOLUCIONES_RIESGOS_OBSERVABILIDAD.md)** ⭐ **NUEVO**
+    - Soluciones conceptuales a riesgos de arquitectura
+    - Métricas y observabilidad sin cambiar código
+    - Herramientas de monitoreo disponibles
+    - Sistema de alertas y reportes
+
+31. **[ESTRATEGIAS_INTEGRACION_TEAMS.md](ESTRATEGIAS_INTEGRACION_TEAMS.md)** ⭐ **NUEVO**
+    - Estrategias para integrar bot con Microsoft Teams
+    - Análisis de impacto en código existente
+    - Componentes reutilizables vs específicos de Telegram
+    - Plan de implementación detallado
+    - Cambios necesarios en BD y seguridad
+
+32. **[RESUMEN_INTEGRACION_TEAMS.md](RESUMEN_INTEGRACION_TEAMS.md)** ⭐ **NUEVO**
+    - Resumen ejecutivo de integración con Teams
+    - Decisión estratégica y plan de implementación
+    - Checklist de implementación
+    - Próximos pasos inmediatos
+
 ---
 
 ## 🔧 ARCHIVOS TÉCNICOS
@@ -283,5 +321,5 @@ aca_4/
 
 ---
 
-**Última actualización:** 2025-11-13
+**Última actualización:** 2025-11-13 (agregado RESUMEN_REVISION_MD.md)
 

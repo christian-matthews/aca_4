@@ -293,14 +293,15 @@ class SupabaseManager:
             logger.error(f"Error agregando comentario al reporte: {e}")
             return None
     
-    def get_reportes_financieros(self, empresa_id: str, periodo: str = None, chat_id: int = None):
+    def get_reportes_financieros(self, empresa_id: str, periodo: str = None, chat_id: int = None, limit: int = 10):
         """
         Obtener reportes financieros de una empresa
         
         Args:
             empresa_id: UUID de la empresa
-            periodo: Periodo en formato YYYY-MM. Si es None, busca mes actual y anterior
+            periodo: Periodo en formato YYYY-MM. Si es None, busca los más recientes
             chat_id: Chat ID del usuario (opcional, para validar acceso)
+            limit: Número máximo de reportes a retornar
         
         Returns:
             Lista de archivos de reportes financieros con contenido/metadata
@@ -311,37 +312,39 @@ class SupabaseManager:
                 logger.warning(f"Usuario {chat_id} intentó acceder a empresa {empresa_id} sin permisos")
                 return []
             
-            from datetime import datetime, timedelta
-            
-            query = self._client.table('archivos').select('*').eq('empresa_id', empresa_id).eq('categoria', 'financiero').eq('activo', True)
+            # Buscar reportes financieros (reportes mensuales, estados financieros, f29, etc.)
+            query = self._client.table('archivos')\
+                .select('*')\
+                .eq('empresa_id', empresa_id)\
+                .eq('categoria', 'financiero')\
+                .eq('activo', True)
             
             if periodo:
                 query = query.eq('periodo', periodo)
-            else:
-                # Buscar mes actual y anterior
-                mes_actual = datetime.now().strftime("%Y-%m")
-                mes_anterior = (datetime.now().replace(day=1) - timedelta(days=1)).strftime("%Y-%m")
-                query = query.in_('periodo', [mes_actual, mes_anterior])
             
             # Filtrar por subtipos de reportes financieros relevantes
-            query = query.in_('subtipo', ['reporte_mensual', 'estados_financieros'])
+            query = query.in_('subtipo', ['reporte_mensual', 'estados_financieros', 'f29', 'otros'])
             
-            result = query.order('periodo', desc=True).order('created_at', desc=True).execute()
+            # Ordenar por período más reciente y limitar resultados
+            result = query.order('periodo', desc=True).order('created_at', desc=True).limit(limit).execute()
+            
+            logger.info(f"📊 get_reportes_financieros: {len(result.data)} reportes encontrados para empresa {empresa_id}")
             return result.data
         except Exception as e:
             logger.error(f"Error obteniendo reportes financieros: {e}")
             return []
     
-    def get_reportes_cfo(self, empresa_id: str, chat_id: int = None):
+    def get_reportes_cfo(self, empresa_id: str, chat_id: int = None, limit: int = 10):
         """
-        Obtener reportes CFO de una empresa
+        Obtener reportes CFO/ejecutivos de una empresa
         
         Args:
             empresa_id: UUID de la empresa
             chat_id: Chat ID del usuario (opcional, para validar acceso)
+            limit: Número máximo de reportes
         
         Returns:
-            Lista de archivos de reportes CFO
+            Lista de archivos de reportes CFO/ejecutivos
         """
         try:
             # Validar acceso si se proporciona chat_id
@@ -349,24 +352,32 @@ class SupabaseManager:
                 logger.warning(f"Usuario {chat_id} intentó acceder a empresa {empresa_id} sin permisos")
                 return []
             
-            # Buscar archivos que contengan "CFO" o "cfo" en nombre, descripción o subtipo
-            # Por ahora buscamos por nombre o descripción que contenga CFO
-            query = self._client.table('archivos').select('*').eq('empresa_id', empresa_id).eq('activo', True)
+            # Buscar archivos ejecutivos/CFO
+            query = self._client.table('archivos')\
+                .select('*')\
+                .eq('empresa_id', empresa_id)\
+                .eq('activo', True)
             
-            # Buscar en nombre_original, nombre_archivo o descripcion_personalizada
-            # Nota: Supabase PostgREST no tiene búsqueda ILIKE directa, así que usamos filtros
-            result = query.order('created_at', desc=True).execute()
+            result = query.order('periodo', desc=True).order('created_at', desc=True).limit(50).execute()
             
-            # Filtrar en Python para encontrar archivos relacionados con CFO
+            # Filtrar en Python para encontrar archivos relacionados con CFO/ejecutivos
             reportes_cfo = []
+            keywords = ['cfo', 'performance', 'monthly', 'ejecutivo', 'resumen', 'consolidado', 'dashboard']
+            
             for archivo in result.data:
                 nombre = (archivo.get('nombre_original') or archivo.get('nombre_archivo') or '').lower()
                 descripcion = (archivo.get('descripcion_personalizada') or archivo.get('descripcion') or '').lower()
                 subtipo = (archivo.get('subtipo') or '').lower()
                 
-                if 'cfo' in nombre or 'cfo' in descripcion or 'cfo' in subtipo:
-                    reportes_cfo.append(archivo)
+                for keyword in keywords:
+                    if keyword in nombre or keyword in descripcion or keyword in subtipo:
+                        reportes_cfo.append(archivo)
+                        break
+                
+                if len(reportes_cfo) >= limit:
+                    break
             
+            logger.info(f"📈 get_reportes_cfo: {len(reportes_cfo)} reportes CFO/ejecutivos encontrados para empresa {empresa_id}")
             return reportes_cfo
         except Exception as e:
             logger.error(f"Error obteniendo reportes CFO: {e}")

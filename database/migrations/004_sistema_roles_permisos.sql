@@ -52,3 +52,4 @@ COMMENT ON COLUMN usuarios.rol IS 'Rol global del usuario: super_admin, gestor, 
 
 
 
+

@@ -1,6 +1,7 @@
 """
 📤 Handler de Subida de Archivos
 Maneja el flujo conversacional para subir archivos al sistema
+Reportes financieros se suben también a OpenAI para el Asesor IA
 """
 
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
@@ -11,6 +12,7 @@ from app.services.session_manager import get_session_manager
 from app.services.storage_service import get_storage_service
 from app.services.ai_service import get_ai_service
 from app.services.conversation_logger import get_conversation_logger
+from app.services.openai_assistant_service import get_assistant_service
 from app.utils.file_types import (
     get_botones_categorias,
     get_botones_subtipos,
@@ -25,6 +27,16 @@ from datetime import datetime, timedelta
 import logging
 
 logger = logging.getLogger(__name__)
+
+# Subtipos que se suben a OpenAI para el Asesor IA (solo reportes financieros)
+SUBTIPOS_PARA_OPENAI = [
+    'reporte_mensual',
+    'estados_financieros'
+]
+
+# Extensiones de archivo que se suben a OpenAI
+EXTENSIONES_OPENAI = ['.pdf']
+
 
 def escape_markdown(text):
     """Escapar caracteres especiales para Markdown"""
@@ -150,12 +162,20 @@ class FileUploadHandler:
         """Preguntar categoría del archivo"""
         text = "📁 **¿Qué tipo de archivo es?**\n\nSelecciona la categoría:"
         
+        # Crear botones en 2 columnas
+        botones = get_botones_categorias()
         keyboard = []
-        for boton in get_botones_categorias():
-            keyboard.append([InlineKeyboardButton(
+        row = []
+        for boton in botones:
+            row.append(InlineKeyboardButton(
                 boton['text'],
                 callback_data=f"upload_{boton['callback_data']}"
-            )])
+            ))
+            if len(row) == 2:
+                keyboard.append(row)
+                row = []
+        if row:
+            keyboard.append(row)
         
         keyboard.append([InlineKeyboardButton("❌ Cancelar", callback_data="upload_cancelar")])
         reply_markup = InlineKeyboardMarkup(keyboard)
@@ -327,15 +347,25 @@ class FileUploadHandler:
         """Preguntar subtipo del archivo"""
         text = f"📁 **{get_categoria_nombre(categoria)}**\n\nSelecciona el tipo específico:"
         
+        # Crear botones en 2 columnas
+        botones = get_botones_subtipos(categoria)
         keyboard = []
-        for boton in get_botones_subtipos(categoria):
-            keyboard.append([InlineKeyboardButton(
+        row = []
+        for boton in botones:
+            row.append(InlineKeyboardButton(
                 boton['text'],
                 callback_data=f"upload_subtipo_{categoria}_{boton['callback_data'].replace(f'subtipo_{categoria}_', '')}"
-            )])
+            ))
+            if len(row) == 2:
+                keyboard.append(row)
+                row = []
+        if row:
+            keyboard.append(row)
         
-        keyboard.append([InlineKeyboardButton("🔙 Volver", callback_data="upload_back_categoria")])
-        keyboard.append([InlineKeyboardButton("❌ Cancelar", callback_data="upload_cancelar")])
+        keyboard.append([
+            InlineKeyboardButton("🔙 Volver", callback_data="upload_back_categoria"),
+            InlineKeyboardButton("❌ Cancelar", callback_data="upload_cancelar")
+        ])
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         await query.edit_message_text(text, reply_markup=reply_markup, parse_mode='Markdown')
@@ -364,10 +394,14 @@ class FileUploadHandler:
         text = "📅 **¿Para qué período es este archivo?**\n\nSelecciona una opción:"
         
         keyboard = [
-            [InlineKeyboardButton(f"🟢 Mes actual ({current_month})", callback_data="upload_periodo_actual")],
-            [InlineKeyboardButton(f"🟡 Mes anterior ({last_month})", callback_data="upload_periodo_anterior")],
-            [InlineKeyboardButton("📅 Otro mes", callback_data="upload_periodo_otro")],
-            [InlineKeyboardButton("❌ Cancelar", callback_data="upload_cancelar")]
+            [
+                InlineKeyboardButton(f"🟢 Actual ({current_month})", callback_data="upload_periodo_actual"),
+                InlineKeyboardButton(f"🟡 Anterior ({last_month})", callback_data="upload_periodo_anterior")
+            ],
+            [
+                InlineKeyboardButton("📅 Otro mes", callback_data="upload_periodo_otro"),
+                InlineKeyboardButton("❌ Cancelar", callback_data="upload_cancelar")
+            ]
         ]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
@@ -604,18 +638,48 @@ class FileUploadHandler:
             )
             
             if archivo_result:
-                # Limpiar sesión
-                session_manager.clear_session(chat_id)
-                
-                # Mensaje de confirmación
+                # Mensaje de confirmación base
                 categoria_nombre = get_categoria_nombre(session_data['categoria'])
                 subtipo_nombre = get_subtipo_nombre(session_data['categoria'], session_data['subtipo'])
                 empresa_nombre = session_data.get('empresa_nombre', 'N/A')
                 periodo = session_data['periodo']
+                filename = session_data['nombre_original_archivo']
+                subtipo = session_data['subtipo']
+                empresa_id = session_data['empresa_id']
+                
+                # Verificar si es un reporte PDF que debe subirse a OpenAI
+                openai_uploaded = False
+                extension = '.' + filename.split('.')[-1].lower() if '.' in filename else ''
+                
+                if subtipo in SUBTIPOS_PARA_OPENAI and extension in EXTENSIONES_OPENAI:
+                    logger.info(f"📤 Subiendo reporte a OpenAI: {filename} (subtipo: {subtipo})")
+                    
+                    try:
+                        assistant_service = get_assistant_service()
+                        archivo_id = archivo_result.get('id')
+                        
+                        # Subir a OpenAI y asociar al Assistant de la empresa
+                        openai_file_id = await assistant_service.upload_file_to_openai(
+                            file_bytes=bytes(file_bytes),
+                            filename=filename,
+                            empresa_id=empresa_id,
+                            archivo_id=archivo_id
+                        )
+                        
+                        if openai_file_id:
+                            openai_uploaded = True
+                            logger.info(f"✅ Reporte subido a OpenAI: {openai_file_id}")
+                        else:
+                            logger.warning(f"⚠️ No se pudo subir a OpenAI: {filename}")
+                    except Exception as e:
+                        logger.error(f"❌ Error subiendo a OpenAI: {e}")
+                
+                # Limpiar sesión
+                session_manager.clear_session(chat_id)
                 
                 text = (
                     f"✅ **Archivo subido exitosamente**\n\n"
-                    f"📁 **Archivo:** {escape_markdown(session_data['nombre_original_archivo'])}\n"
+                    f"📁 **Archivo:** {escape_markdown(filename)}\n"
                     f"🏢 **Empresa:** {escape_markdown(empresa_nombre)}\n"
                     f"📂 **Categoría:** {categoria_nombre}\n"
                     f"📄 **Tipo:** {subtipo_nombre}\n"
@@ -625,15 +689,23 @@ class FileUploadHandler:
                 if session_data.get('descripcion_personalizada'):
                     text += f"📝 **Descripción:** {escape_markdown(session_data['descripcion_personalizada'])}\n"
                 
-                # Enviar mensaje de confirmación
+                # Indicar si se subió a OpenAI
+                if openai_uploaded:
+                    text += f"\n🤖 _Disponible para consultas con Asesor IA_"
+                
+                # Botón para volver al menú principal
+                keyboard = [[InlineKeyboardButton("🔙 Volver al menú", callback_data="back_main")]]
+                reply_markup = InlineKeyboardMarkup(keyboard)
+                
+                # Enviar mensaje de confirmación con botón
                 if is_callback:
-                    await message_or_query.edit_message_text(text, parse_mode='Markdown')
+                    await message_or_query.edit_message_text(text, reply_markup=reply_markup, parse_mode='Markdown')
                 else:
                     # Si es desde texto, editar el mensaje de "procesando" o enviar uno nuevo
                     try:
-                        await processing_msg.edit_text(text, parse_mode='Markdown')
+                        await processing_msg.edit_text(text, reply_markup=reply_markup, parse_mode='Markdown')
                     except:
-                        await message_or_query.reply_text(text, parse_mode='Markdown')
+                        await message_or_query.reply_text(text, reply_markup=reply_markup, parse_mode='Markdown')
             else:
                 error_text = "❌ Error al subir el archivo. Por favor, intenta nuevamente."
                 if is_callback:

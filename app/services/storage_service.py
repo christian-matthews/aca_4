@@ -216,7 +216,7 @@ class StorageService:
     
     async def delete_file(self, file_id: str) -> bool:
         """
-        Eliminar archivo de Supabase Storage y base de datos
+        Eliminar archivo de Supabase Storage, OpenAI (si aplica) y base de datos
         
         Args:
             file_id: ID del archivo
@@ -233,13 +233,28 @@ class StorageService:
             
             file_data = file_info.data[0]
             storage_path = file_data.get('storage_path')
+            openai_file_id = file_data.get('openai_file_id')
             
-            # Eliminar de Storage
+            # Eliminar de Supabase Storage
             if storage_path:
                 self.supabase.storage.from_(self.bucket_name).remove([storage_path])
+                logger.info(f"✅ Archivo eliminado de Supabase Storage: {storage_path}")
             
-            # Marcar como inactivo en base de datos
-            self.supabase.table('archivos').update({'activo': False}).eq('id', file_id).execute()
+            # Eliminar de OpenAI si tiene file_id
+            if openai_file_id:
+                try:
+                    from app.services.openai_assistant_service import get_assistant_service
+                    assistant_service = get_assistant_service()
+                    await assistant_service.delete_file_from_openai(openai_file_id)
+                    logger.info(f"✅ Archivo eliminado de OpenAI: {openai_file_id}")
+                except Exception as e:
+                    logger.warning(f"⚠️ No se pudo eliminar de OpenAI: {e}")
+            
+            # Marcar como inactivo en base de datos y limpiar openai_file_id
+            self.supabase.table('archivos').update({
+                'activo': False,
+                'openai_file_id': None
+            }).eq('id', file_id).execute()
             
             logger.info(f"✅ Archivo {file_id} eliminado exitosamente")
             return True

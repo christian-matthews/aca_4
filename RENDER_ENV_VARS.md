@@ -16,10 +16,15 @@ SUPABASE_SERVICE_KEY=
 SUPABASE_STORAGE_BUCKET=ACA_4
 ```
 
-### 🟡 OPCIONALES (Recomendadas)
+### 🟠 REQUERIDA PARA ASESOR IA
 
 ```bash
 OPENAI_API_KEY=
+```
+
+### 🟡 OPCIONALES (Recomendadas)
+
+```bash
 ENVIRONMENT=production
 DEBUG=false
 MAX_FILE_SIZE_MB=50
@@ -68,12 +73,14 @@ MAX_FILE_SIZE_MB=50
 2. Verifica que exista el bucket `ACA_4`
 3. Si no existe, créalo con permisos públicos
 
-### OpenAI (Opcional - Solo si usas Asesor IA)
+### OpenAI (REQUERIDO para Asesor IA y Tickets)
 
 #### OPENAI_API_KEY
 1. Ve a [platform.openai.com](https://platform.openai.com)
 2. API Keys → **Create new secret key**
 3. Copia el key (solo se muestra una vez)
+4. ⚠️ **REQUERIDO** si quieres usar el Asesor IA
+5. El sistema usa OpenAI Assistants API con File Search
 
 ## ✅ Verificación
 

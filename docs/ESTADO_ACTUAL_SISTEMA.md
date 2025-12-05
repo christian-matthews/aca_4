@@ -501,3 +501,4 @@ periodo_result = ai_service._parse_periodo_manual(mensaje)
 **Última actualización:** 2025-11-13 10:15
 
 
+
