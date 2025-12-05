@@ -23,18 +23,22 @@ class AIService:
         key_status = f"presente ({self.openai_key[:8]}...)" if self.openai_key else "NO configurada"
         logger.info(f"🔧 AIService - API Key: {key_status}")
         
-        # Intentar inicializar OpenAI si hay API key
+        # Inicializar OpenAI
         if self.openai_key:
             try:
+                import openai
+                logger.info(f"📦 openai version: {openai.__version__}")
                 from openai import AsyncOpenAI
                 self.client = AsyncOpenAI(api_key=self.openai_key)
-                logger.info("✅ OpenAI AIService inicializado correctamente")
+                logger.info(f"✅ OpenAI AIService inicializado - client: {type(self.client)}")
             except ImportError as e:
-                logger.warning(f"⚠️ openai no instalado: {e}")
+                logger.error(f"❌ openai NO INSTALADO: {e}")
+                self.client = None
             except Exception as e:
-                logger.error(f"❌ Error inicializando OpenAI: {e}")
+                logger.error(f"❌ Error creando cliente OpenAI: {type(e).__name__}: {e}")
+                self.client = None
         else:
-            logger.warning("⚠️ OPENAI_API_KEY no configurada - AIService no disponible")
+            logger.warning("⚠️ OPENAI_API_KEY no configurada")
     
     async def extract_file_intent(
         self,

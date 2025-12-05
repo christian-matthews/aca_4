@@ -58,15 +58,19 @@ class OpenAIAssistantService:
         
         if self.api_key:
             try:
+                import openai
+                logger.info(f"📦 openai version: {openai.__version__}")
                 from openai import AsyncOpenAI
                 self.client = AsyncOpenAI(api_key=self.api_key)
-                logger.info("✅ OpenAI Assistant Service inicializado correctamente")
+                logger.info(f"✅ OpenAI Assistant Service OK - client: {type(self.client)}")
             except ImportError as e:
-                logger.error(f"❌ openai no instalado: {e}")
+                logger.error(f"❌ openai NO INSTALADO: {e}")
+                self.client = None
             except Exception as e:
-                logger.error(f"❌ Error inicializando OpenAI: {e}")
+                logger.error(f"❌ Error creando cliente: {type(e).__name__}: {e}")
+                self.client = None
         else:
-            logger.warning("⚠️ OPENAI_API_KEY no configurada - Asesor IA no disponible")
+            logger.warning("⚠️ OPENAI_API_KEY no configurada")
     
     async def get_or_create_assistant(self, empresa_id: str, empresa_nombre: str) -> Optional[str]:
         """
