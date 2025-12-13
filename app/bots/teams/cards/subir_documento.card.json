@@ -1,0 +1,123 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Subir documento",
+      "size": "Large",
+      "weight": "Bolder",
+      "wrap": true
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "Archivo",
+          "weight": "Bolder",
+          "wrap": true
+        },
+        {
+          "type": "TextBlock",
+          "text": "Arrastra el archivo o haz clic para seleccionar",
+          "wrap": true,
+          "isSubtle": true
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "Tipo de documento",
+          "weight": "Bolder",
+          "wrap": true
+        },
+        {
+          "type": "Input.ChoiceSet",
+          "id": "tipo_documento",
+          "value": "legal",
+          "choices": [
+            {
+              "title": "Legal",
+              "value": "legal"
+            },
+            {
+              "title": "Financiero",
+              "value": "financiero"
+            },
+            {
+              "title": "Tributario",
+              "value": "tributario"
+            }
+          ]
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "Subtipo de documento",
+          "weight": "Bolder",
+          "wrap": true
+        },
+        {
+          "type": "Input.Text",
+          "id": "subtipo_documento",
+          "value": "Comprobante de pago IVA",
+          "placeholder": "Ingresa el subtipo"
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "Período",
+          "weight": "Bolder",
+          "wrap": true
+        },
+        {
+          "type": "Input.Text",
+          "id": "periodo",
+          "value": "2025-12",
+          "placeholder": "YYYY-MM"
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Confirmar subida",
+      "id": "action_confirmar_subida",
+      "style": "positive",
+      "data": {
+        "action": "action_confirmar_subida"
+      }
+    },
+    {
+      "type": "Action.Submit",
+      "title": "Cancelar",
+      "id": "action_cancelar",
+      "data": {
+        "action": "action_cancelar"
+      }
+    }
+  ]
+}
+
