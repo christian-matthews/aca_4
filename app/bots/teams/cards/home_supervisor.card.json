@@ -1,0 +1,242 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Contadores",
+      "size": "Large",
+      "weight": "Bolder",
+      "wrap": true
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "María González",
+                  "weight": "Bolder",
+                  "wrap": true
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "🔴 sobrecarga",
+                  "wrap": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "title": "Empresas asignadas",
+              "value": "3"
+            },
+            {
+              "title": "Pendientes críticos",
+              "value": "8"
+            },
+            {
+              "title": "Pendientes totales",
+              "value": "12"
+            }
+          ]
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "Carlos Ramírez",
+                  "weight": "Bolder",
+                  "wrap": true
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "✅ al día",
+                  "wrap": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "title": "Empresas asignadas",
+              "value": "4"
+            },
+            {
+              "title": "Pendientes críticos",
+              "value": "0"
+            },
+            {
+              "title": "Pendientes totales",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium"
+    },
+    {
+      "type": "TextBlock",
+      "text": "¿Dónde está atascado el equipo?",
+      "size": "Medium",
+      "weight": "Bolder",
+      "wrap": true,
+      "spacing": "Large"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "Industrias XYZ S.A.",
+                  "weight": "Bolder",
+                  "wrap": true
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "🔴 crítico",
+                  "wrap": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "title": "Contador",
+              "value": "María González"
+            },
+            {
+              "title": "Detalle",
+              "value": "4 documentos vencen en 48h"
+            }
+          ]
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "Logística Total S.A.",
+                  "weight": "Bolder",
+                  "wrap": true
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "🔴 crítico",
+                  "wrap": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "title": "Contador",
+              "value": "María González"
+            },
+            {
+              "title": "Detalle",
+              "value": "3 documentos bloqueados"
+            }
+          ]
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Ver detalle por contador",
+      "id": "action_ver_detalle_contador",
+      "style": "positive",
+      "data": {
+        "action": "action_ver_detalle_contador"
+      }
+    },
+    {
+      "type": "Action.Submit",
+      "title": "Destrabar pendiente",
+      "id": "action_destrabar_pendiente",
+      "data": {
+        "action": "action_destrabar_pendiente"
+      }
+    }
+  ]
+}
+
