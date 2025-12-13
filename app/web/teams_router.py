@@ -8,6 +8,11 @@ from fastapi.responses import JSONResponse
 import logging
 import os
 
+from app.bots.teams.handlers.home_contador_handler import (
+    get_home_contador_card,
+    create_home_contador_response
+)
+
 logger = logging.getLogger(__name__)
 
 # Crear router
@@ -80,4 +85,36 @@ async def teams_health():
         "configured": bool(teams_app_id and teams_app_password),
         "status": "ok" if teams_enabled else "disabled"
     }
+
+
+@router.get("/cards/home-contador")
+async def get_card_home_contador():
+    """
+    Obtener el Adaptive Card HOME_CONTADOR (para preview/debug)
+    
+    Returns:
+        El Adaptive Card como JSON
+    """
+    try:
+        card = get_home_contador_card()
+        return card
+    except Exception as e:
+        logger.error(f"Error obteniendo card HOME_CONTADOR: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/cards/home-contador/response")
+async def get_card_home_contador_response():
+    """
+    Obtener la respuesta completa de Teams con el card HOME_CONTADOR
+    
+    Returns:
+        Respuesta formateada para Teams Bot Framework
+    """
+    try:
+        response = create_home_contador_response()
+        return response
+    except Exception as e:
+        logger.error(f"Error creando respuesta HOME_CONTADOR: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
