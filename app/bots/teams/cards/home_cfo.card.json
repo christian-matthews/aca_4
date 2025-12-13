@@ -1,0 +1,228 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Supervisores",
+      "size": "Large",
+      "weight": "Bolder",
+      "wrap": true
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "Roberto Silva",
+                  "weight": "Bolder",
+                  "wrap": true
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "🔴 sobrecarga",
+                  "wrap": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "title": "Contadores",
+              "value": "3"
+            },
+            {
+              "title": "Empresas",
+              "value": "9"
+            },
+            {
+              "title": "Pendientes críticos",
+              "value": "15"
+            },
+            {
+              "title": "Pendientes totales",
+              "value": "28"
+            }
+          ]
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Empresas críticas",
+      "size": "Medium",
+      "weight": "Bolder",
+      "wrap": true,
+      "spacing": "Large"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "Industrias XYZ S.A.",
+                  "weight": "Bolder",
+                  "wrap": true
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "🔴 crítico",
+                  "wrap": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "title": "Supervisor",
+              "value": "Roberto Silva"
+            },
+            {
+              "title": "Detalle",
+              "value": "4 documentos vencen en 48h"
+            }
+          ]
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "Fondo Inversión Alpha",
+                  "weight": "Bolder",
+                  "wrap": true
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "🔴 crítico",
+                  "wrap": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "title": "Responsable",
+              "value": "CFO directo"
+            },
+            {
+              "title": "Detalle",
+              "value": "Reporte trimestral pendiente"
+            }
+          ]
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "KPIs ejecutivos",
+          "weight": "Bolder",
+          "wrap": true
+        },
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "title": "Empresas totales",
+              "value": "15"
+            },
+            {
+              "title": "Empresas en riesgo",
+              "value": "2"
+            },
+            {
+              "title": "Pendientes críticos",
+              "value": "16"
+            },
+            {
+              "title": "Carga promedio",
+              "value": "85%"
+            }
+          ]
+        }
+      ],
+      "separator": true,
+      "spacing": "Large"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Priorizar empresa crítica",
+      "id": "action_priorizar_empresa",
+      "style": "positive",
+      "data": {
+        "action": "action_priorizar_empresa"
+      }
+    },
+    {
+      "type": "Action.Submit",
+      "title": "Destrabar pendiente",
+      "id": "action_destrabar_pendiente",
+      "data": {
+        "action": "action_destrabar_pendiente"
+      }
+    }
+  ]
+}
+

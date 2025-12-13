@@ -24,6 +24,10 @@ from app.bots.teams.handlers.home_supervisor_handler import (
     get_home_supervisor_card,
     create_home_supervisor_response
 )
+from app.bots.teams.handlers.home_cfo_handler import (
+    get_home_cfo_card,
+    create_home_cfo_response
+)
 
 logger = logging.getLogger(__name__)
 
@@ -224,5 +228,37 @@ async def get_card_home_supervisor_response():
         return response
     except Exception as e:
         logger.error(f"Error creando respuesta HOME_SUPERVISOR: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/cards/home-cfo")
+async def get_card_home_cfo():
+    """
+    Obtener el Adaptive Card HOME_CFO (para preview/debug)
+    
+    Returns:
+        El Adaptive Card como JSON
+    """
+    try:
+        card = get_home_cfo_card()
+        return card
+    except Exception as e:
+        logger.error(f"Error obteniendo card HOME_CFO: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/cards/home-cfo/response")
+async def get_card_home_cfo_response():
+    """
+    Obtener la respuesta completa de Teams con el card HOME_CFO
+    
+    Returns:
+        Respuesta formateada para Teams Bot Framework
+    """
+    try:
+        response = create_home_cfo_response()
+        return response
+    except Exception as e:
+        logger.error(f"Error creando respuesta HOME_CFO: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
