@@ -1,0 +1,190 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.5",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "Industrias XYZ S.A.",
+      "size": "Large",
+      "weight": "Bolder",
+      "wrap": true
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "Necesitamos 2 documentos de tu parte",
+          "weight": "Bolder",
+          "wrap": true
+        },
+        {
+          "type": "TextBlock",
+          "text": "Para cerrar diciembre 2025 necesitamos el comprobante de pago IVA y la conciliación bancaria. Vencen el 15/12/2025.",
+          "wrap": true,
+          "isSubtle": true
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "TextBlock",
+          "text": "Estado general",
+          "weight": "Bolder",
+          "wrap": true
+        },
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "title": "Periodo",
+              "value": "Diciembre 2025"
+            },
+            {
+              "title": "Estado",
+              "value": "✅ Al día"
+            },
+            {
+              "title": "Documentos totales",
+              "value": "18"
+            },
+            {
+              "title": "Pendientes",
+              "value": "2"
+            }
+          ]
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium"
+    },
+    {
+      "type": "TextBlock",
+      "text": "Pendientes del cliente",
+      "weight": "Bolder",
+      "wrap": true,
+      "spacing": "Large"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "Comprobante de pago IVA",
+                  "weight": "Bolder",
+                  "wrap": true
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "🔴 crítico",
+                  "wrap": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "title": "Periodo",
+              "value": "Dic 2025"
+            },
+            {
+              "title": "Vence",
+              "value": "15/12/2025"
+            }
+          ]
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium"
+    },
+    {
+      "type": "Container",
+      "items": [
+        {
+          "type": "ColumnSet",
+          "columns": [
+            {
+              "type": "Column",
+              "width": "stretch",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "Conciliación bancaria",
+                  "weight": "Bolder",
+                  "wrap": true
+                }
+              ]
+            },
+            {
+              "type": "Column",
+              "width": "auto",
+              "items": [
+                {
+                  "type": "TextBlock",
+                  "text": "🔴 crítico",
+                  "wrap": true
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "FactSet",
+          "facts": [
+            {
+              "title": "Periodo",
+              "value": "Dic 2025"
+            },
+            {
+              "title": "Vence",
+              "value": "15/12/2025"
+            }
+          ]
+        }
+      ],
+      "separator": true,
+      "spacing": "Medium"
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.Submit",
+      "title": "Subir documento",
+      "id": "action_subir_documento",
+      "style": "positive",
+      "data": {
+        "action": "action_subir_documento"
+      }
+    },
+    {
+      "type": "Action.Submit",
+      "title": "Asesor IA",
+      "id": "action_asesor_ia",
+      "data": {
+        "action": "action_asesor_ia"
+      }
+    }
+  ]
+}
+

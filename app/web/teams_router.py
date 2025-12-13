@@ -16,6 +16,10 @@ from app.bots.teams.handlers.subir_documento_handler import (
     get_subir_documento_card,
     create_subir_documento_response
 )
+from app.bots.teams.handlers.home_cliente_handler import (
+    get_home_cliente_card,
+    create_home_cliente_response
+)
 
 logger = logging.getLogger(__name__)
 
@@ -152,5 +156,37 @@ async def get_card_subir_documento_response():
         return response
     except Exception as e:
         logger.error(f"Error creando respuesta SUBIR_DOCUMENTO: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/cards/home-cliente")
+async def get_card_home_cliente():
+    """
+    Obtener el Adaptive Card HOME_CLIENTE (para preview/debug)
+    
+    Returns:
+        El Adaptive Card como JSON
+    """
+    try:
+        card = get_home_cliente_card()
+        return card
+    except Exception as e:
+        logger.error(f"Error obteniendo card HOME_CLIENTE: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/cards/home-cliente/response")
+async def get_card_home_cliente_response():
+    """
+    Obtener la respuesta completa de Teams con el card HOME_CLIENTE
+    
+    Returns:
+        Respuesta formateada para Teams Bot Framework
+    """
+    try:
+        response = create_home_cliente_response()
+        return response
+    except Exception as e:
+        logger.error(f"Error creando respuesta HOME_CLIENTE: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
